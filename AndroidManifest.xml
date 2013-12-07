@@ -29,15 +29,15 @@
             android:theme="@style/FullscreenTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.cs385.chatclient.CCMainActivity" />
+                android:value="nuim.androsferatu.CCMainActivity" />
         </activity>
         <activity
-            android:name="com.cs385nuim.androsferatu.ChatActivity"
+            android:name="nuim.androsferatu.ChatActivity"
             android:label="@string/title_activity_chat"
             android:parentActivityName="nuim.androsferatu.CCMainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.cs385.chatclient.CCMainActivity" />
+                android:value="nuim.androsferatu.CCMainActivity" />
         </activity>
                 <activity
             android:name="nuim.androsferatu.MainActivity"
