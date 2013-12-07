@@ -3,7 +3,7 @@
 
     <string name="app_name">Androsferatu</string>
     <string name="action_settings">Settings</string>
-    <string name="button_join">Join</string>
-    <string name="button_create">Create game</string>
+    <string name="start">Start</string>
+    <string name="title_activity_game">GameActivity</string>
 
 </resources>
