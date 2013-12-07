@@ -10,6 +10,10 @@
     <string name="exit">Exit</string>
     <string name="title_activity_activity_log_in">ActivityLogIn</string>
     <string name="ok">OK</string>
-    <string name="hello_world">Hello world!</string>
-
+    <string name="title_activity_server_offline">ServerOfflineActivity</string>
+    <string name="dummy_button">Exit</string>
+    <string name="dummy_content">Sorry, Server is Offline\n:(</string>
+    <string name="title_activity_chat">ChatActivity</string>
+    <string name="welcome">Welcome !\nPlease choose a name</string>
+    <string name="submitBtnText">Let\'s Go !</string>
 </resources>
