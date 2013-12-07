@@ -30,7 +30,7 @@ public class TCPClient implements Runnable
 			/*
 			 * NUIMWireless : 192.168.4.178
 			 * Eduroam : 149.157.36.38
-			 * Eircom : 192.168.1.2
+			 * Eircom : 192.168.1.2 -
 			 * 
 			 */
 			this.serverAddr = InetAddress.getByName("192.168.1.2");
