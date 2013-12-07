@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="nuim.androsferatu"
+    package="com.cs385.chatclient"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -8,13 +8,16 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="nuim.androsferatu.MainActivity"
+            android:name="com.cs385.chatclient.CCMainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,8 +26,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="nuim.androsferatu.GameActivity"
-            android:label="@string/title_activity_game" >
+            android:name="com.cs385.chatclient.ServerOfflineActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_server_offline"
+            android:parentActivityName="com.cs385.chatclient.CCMainActivity"
+            android:theme="@style/FullscreenTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.cs385.chatclient.CCMainActivity" />
+        </activity>
+        <activity
+            android:name="com.cs385.chatclient.ChatActivity"
+            android:label="@string/title_activity_chat"
+            android:parentActivityName="com.cs385.chatclient.CCMainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.cs385.chatclient.CCMainActivity" />
         </activity>
     </application>
 

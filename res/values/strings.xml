@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Androsferatu</string>
+    <string name="app_name">ChatClient</string>
     <string name="action_settings">Settings</string>
-    <string name="start">Start</string>
-    <string name="title_activity_game">GameActivity</string>
+    <string name="title"></string>
+    <string name="title_activity_server_offline">ServerOfflineActivity</string>
+    <string name="dummy_button">Exit</string>
+    <string name="dummy_content">Sorry, Server is Offline\n:(</string>
+    <string name="title_activity_chat">ChatActivity</string>
+    <string name="welcome">Welcome !\nPlease choose a name</string>
+    <string name="submitBtnText">Let\'s Go !</string>
 
 </resources>
