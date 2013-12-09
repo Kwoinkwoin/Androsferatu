@@ -33,36 +33,46 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
-        public static final int nosferatu_boite=0x7f020001;
-        public static final int nosferatu_nuit=0x7f020002;
-        public static final int nosferatu_titre=0x7f020003;
-        public static final int nosferatu_view1=0x7f020004;
+        public static final int nosferatu_ambiance4=0x7f020001;
+        public static final int nosferatu_boite=0x7f020002;
+        public static final int nosferatu_composants=0x7f020003;
+        public static final int nosferatu_illo1=0x7f020004;
+        public static final int nosferatu_illo2=0x7f020005;
+        public static final int nosferatu_illo3=0x7f020006;
+        public static final int nosferatu_illo4=0x7f020007;
+        public static final int nosferatu_nuit=0x7f020008;
+        public static final int nosferatu_titre=0x7f020009;
+        public static final int nosferatu_view1=0x7f02000a;
     }
     public static final class id {
-        public static final int action_settings=0x7f09000a;
-        public static final int button1=0x7f090006;
-        public static final int exit_button=0x7f090009;
-        public static final int fullscreen_content=0x7f090007;
-        public static final int fullscreen_content_controls=0x7f090008;
-        public static final int input=0x7f090004;
-        public static final int listView1=0x7f090003;
-        public static final int nameInput=0x7f090001;
-        public static final int sendButton=0x7f090005;
-        public static final int submitBtn=0x7f090002;
-        public static final int welcome_msg=0x7f090000;
+        public static final int action_settings=0x7f09000c;
+        public static final int button1=0x7f090002;
+        public static final int editText1=0x7f090000;
+        public static final int exit_button=0x7f09000b;
+        public static final int fullscreen_content=0x7f090009;
+        public static final int fullscreen_content_controls=0x7f09000a;
+        public static final int input=0x7f090007;
+        public static final int listView1=0x7f090006;
+        public static final int nameInput=0x7f090004;
+        public static final int sendButton=0x7f090008;
+        public static final int submitBtn=0x7f090005;
+        public static final int textView1=0x7f090001;
+        public static final int welcome_msg=0x7f090003;
     }
     public static final class layout {
-        public static final int activity_ccmain=0x7f030000;
-        public static final int activity_chat=0x7f030001;
-        public static final int activity_game=0x7f030002;
-        public static final int activity_main=0x7f030003;
-        public static final int activity_server_offline=0x7f030004;
+        public static final int activity_activity_log_in=0x7f030000;
+        public static final int activity_ccmain=0x7f030001;
+        public static final int activity_chat=0x7f030002;
+        public static final int activity_game=0x7f030003;
+        public static final int activity_main=0x7f030004;
+        public static final int activity_server_offline=0x7f030005;
     }
     public static final class menu {
-        public static final int ccmain=0x7f080000;
-        public static final int chat=0x7f080001;
-        public static final int game=0x7f080002;
-        public static final int main=0x7f080003;
+        public static final int activity_log_in=0x7f080000;
+        public static final int ccmain=0x7f080001;
+        public static final int chat=0x7f080002;
+        public static final int game=0x7f080003;
+        public static final int main=0x7f080004;
     }
     public static final class string {
         public static final int action_settings=0x7f060001;
