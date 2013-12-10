@@ -8,32 +8,43 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".InGameActivity"
     android:orientation="vertical" >
+
     
-    <LinearLayout
-  		android:layout_weight="5"
-  		android:layout_height="match_parent"
-  		android:layout_width="match_parent"
-        android:orientation="vertical" >
-
-       <ListView
-               android:id="@+id/listView1"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content" >
-       </ListView>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_weight="1"
+		<TextView
+		android:layout_weight="40"
+		android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-  		android:layout_width="match_parent"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:id="@+id/textView1"
+        android:text="@string/info" />
+
+    	<ImageView
+    	android:layout_weight="10"
+    	android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/imageView1"
+        android:src="@drawable/nosferatu_boite" />
+    	
+        <ListView
+            
+            android:layout_weight="10"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:id="@+id/listView1" >
+        </ListView>
+
+    <LinearLayout
+        android:layout_weight="10"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:ems="10" >
 
             <requestFocus />
@@ -44,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Send" />
+            android:text="@string/send" />
         
     </LinearLayout>
 

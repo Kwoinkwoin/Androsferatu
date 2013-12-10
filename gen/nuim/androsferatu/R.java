@@ -45,16 +45,17 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int nosferatu_view1=0x7f02000a;
     }
     public static final class id {
-        public static final int action_settings=0x7f09000c;
+        public static final int action_settings=0x7f09000d;
         public static final int button1=0x7f090002;
         public static final int editText1=0x7f090000;
-        public static final int exit_button=0x7f09000b;
-        public static final int fullscreen_content=0x7f090009;
-        public static final int fullscreen_content_controls=0x7f09000a;
-        public static final int input=0x7f090007;
-        public static final int listView1=0x7f090006;
+        public static final int exit_button=0x7f09000c;
+        public static final int fullscreen_content=0x7f09000a;
+        public static final int fullscreen_content_controls=0x7f09000b;
+        public static final int imageView1=0x7f090006;
+        public static final int input=0x7f090008;
+        public static final int listView1=0x7f090007;
         public static final int nameInput=0x7f090004;
-        public static final int sendButton=0x7f090008;
+        public static final int sendButton=0x7f090009;
         public static final int submitBtn=0x7f090005;
         public static final int textView1=0x7f090001;
         public static final int welcome_msg=0x7f090003;
@@ -80,8 +81,10 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int dummy_button=0x7f06000a;
         public static final int dummy_content=0x7f06000b;
         public static final int exit=0x7f060006;
+        public static final int info=0x7f060010;
         public static final int login=0x7f060005;
         public static final int ok=0x7f060008;
+        public static final int send=0x7f06000f;
         public static final int start=0x7f060002;
         public static final int submitBtnText=0x7f06000e;
         public static final int title_activity_activity_log_in=0x7f060007;

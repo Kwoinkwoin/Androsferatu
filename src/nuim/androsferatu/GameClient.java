@@ -16,8 +16,7 @@ public class GameClient implements Runnable
 	private InetAddress serverAddr;
 	private InputHandler inputHdlr;
 	private boolean isGoingtoCrash;
-	
-	public static final String HELLO_MSG = "com.cs385.chatclient.HELLO_MSG";
+
 	
 	public GameClient(InputHandler inputHdlr)
 	{

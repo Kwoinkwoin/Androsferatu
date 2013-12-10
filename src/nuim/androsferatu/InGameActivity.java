@@ -83,9 +83,9 @@ public class InGameActivity extends Activity
 	        	@Override
 	        	public void handleMessage(Message message)
 	        	{
-	        		Bundle b;
-	        		b = message.getData();
-	        		msgData = (String)b.get("android_data_msg");
+	        		Bundle b2;
+	        		b2 = message.getData();
+	        		msgData = (String)b2.get("android_data_msg");
 	        	}
 	        };
 	        
@@ -95,16 +95,17 @@ public class InGameActivity extends Activity
 				@Override
 				public void onMessageRecieve(String message)
 				{
-					Message m = handlerData.obtainMessage();
-					Bundle b = m.getData();
-					b.putString("android_data_msg", message);
-					handler.sendMessage(m);
+					Message m2 = handlerData.obtainMessage();
+					Bundle b2 = m2.getData();
+					b2.putString("android_data_msg", message);
+					handlerData.sendMessage(m2);
 					
 				}
 			});
 		
 		Thread t = new Thread(tcpClient);
 		t.start();
+	
 		Thread gameDataThread = new Thread(gameClient);
 		gameDataThread.start();
 		

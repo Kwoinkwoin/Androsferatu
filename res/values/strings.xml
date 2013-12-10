@@ -16,4 +16,6 @@
     <string name="title_activity_chat">ChatActivity</string>
     <string name="welcome">Welcome !\nPlease choose a name</string>
     <string name="submitBtnText">Let\'s Go !</string>
+    <string name="send">Send</string>
+    <string name="info">Kwoin</string>
 </resources>
