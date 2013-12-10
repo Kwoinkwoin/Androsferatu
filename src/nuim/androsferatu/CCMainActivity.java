@@ -53,8 +53,8 @@ public class CCMainActivity extends Activity
     	String name = input.getText().toString();
     	
     	//put the data in the intent
-    	Intent intent = new Intent(this,ChatActivity.class);
-    	intent.putExtra(ChatActivity.PLAYER_NAME,name);
+    	Intent intent = new Intent(this,InGameActivity.class);
+    	intent.putExtra(/*InGameActivity.*/"PLAYER_NAME",name);
     
     	//actually start the activity
     	startActivity(intent);

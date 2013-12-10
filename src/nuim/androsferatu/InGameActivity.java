@@ -22,15 +22,17 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 
-public class ChatActivity extends Activity
+public class InGameActivity extends Activity
 {
 
 	public static final String PLAYER_NAME = "com.cs385.chatclient.PLAYER_NAME";
 	public static final String TCP_CLIENT = "com.cs385.chatclient.TCP_CLIENT";
 	private TCPClient tcpClient;
+	private GameClient gameClient;
 	private ArrayAdapter<String> msgList;
 	private ListView msgView;
 	private String playerName;
+	private String msgData;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -42,7 +44,7 @@ public class ChatActivity extends Activity
 	
 		//get Player name from previous activity
 		Intent parentIntent = getIntent();
-		this.playerName = parentIntent.getStringExtra(PLAYER_NAME);
+		this.playerName = parentIntent.getStringExtra("PLAYER_NAME");
 		
 		msgView = (ListView)findViewById(R.id.listView1);
         msgList = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
@@ -76,8 +78,35 @@ public class ChatActivity extends Activity
 			}
 		});
 		
+		 final Handler handlerData = new Handler()
+	        {
+	        	@Override
+	        	public void handleMessage(Message message)
+	        	{
+	        		Bundle b;
+	        		b = message.getData();
+	        		msgData = (String)b.get("android_data_msg");
+	        	}
+	        };
+	        
+	    gameClient = new GameClient(new InputHandler()
+			{
+				
+				@Override
+				public void onMessageRecieve(String message)
+				{
+					Message m = handlerData.obtainMessage();
+					Bundle b = m.getData();
+					b.putString("android_data_msg", message);
+					handler.sendMessage(m);
+					
+				}
+			});
+		
 		Thread t = new Thread(tcpClient);
 		t.start();
+		Thread gameDataThread = new Thread(gameClient);
+		gameDataThread.start();
 		
         Button sndButton = (Button)findViewById(R.id.sendButton);
         sndButton.setOnClickListener(new View.OnClickListener()
@@ -121,7 +150,7 @@ public class ChatActivity extends Activity
     		 * then we can move on to chatting.
     		 * If we remove this, we'll get an error message even if the server is running
     		 */
-			Thread.sleep(50);	//50ms mini
+			Thread.sleep(100);	//50ms mini
 		} catch (InterruptedException e)
 		{
 			// TODO Auto-generated catch block

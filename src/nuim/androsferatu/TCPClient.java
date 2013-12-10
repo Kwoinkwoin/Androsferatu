@@ -17,7 +17,7 @@ public class TCPClient implements Runnable
 	private InputHandler inputHdlr;
 	private boolean isGoingtoCrash;
 	
-	public static final String HELLO_MSG = "com.cs385.chatclient.HELLO_MSG";
+	public static final String HELLO_MSG = "Welcome."; //"com.cs385.chatclient.HELLO_MSG";
 	
 	public TCPClient(InputHandler inputHdlr)
 	{
@@ -33,7 +33,7 @@ public class TCPClient implements Runnable
 			 * Eircom : 192.168.1.2 -
 			 * 
 			 */
-			this.serverAddr = InetAddress.getByName("192.168.1.2");
+			this.serverAddr = InetAddress.getByName("192.168.1.3");
 			
 		} catch (UnknownHostException e)
 		{

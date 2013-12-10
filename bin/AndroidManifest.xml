@@ -32,7 +32,7 @@
                 android:value="nuim.androsferatu.CCMainActivity" />
         </activity>
         <activity
-            android:name="nuim.androsferatu.ChatActivity"
+            android:name="nuim.androsferatu.InGameActivity"
             android:label="@string/title_activity_chat"
             android:parentActivityName="nuim.androsferatu.CCMainActivity" >
             <meta-data
