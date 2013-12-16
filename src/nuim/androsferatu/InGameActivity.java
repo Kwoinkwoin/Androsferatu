@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class InGameActivity extends Activity
 {
@@ -29,6 +30,8 @@ public class InGameActivity extends Activity
 	private String playerName;
 	private String msgData;
 	private Player player;
+	private ImageView card;
+	private TextView info;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -40,6 +43,7 @@ public class InGameActivity extends Activity
 	
 		//get Player name from previous activity
 		Intent parentIntent = getIntent();
+		this.card = (ImageView) findViewById(R.id.card);
 		this.playerName = parentIntent.getStringExtra("PLAYER_NAME");
 		this.player = new Player(playerName, this);
 		msgView = (ListView)findViewById(R.id.listView1);
@@ -54,11 +58,18 @@ public class InGameActivity extends Activity
         		Bundle b;
         		b = message.getData();
         		String s = (String)b.get("android_chat_msg");
-				msgList.add(s);
-				msgList.notifyDataSetChanged();
-				msgView.smoothScrollToPosition(msgList.getCount() - 1);
+        		String cardId = (String)b.get("android_image_id");
+        		if(s != null) {
+					msgList.add(s);
+					msgList.notifyDataSetChanged();
+					msgView.smoothScrollToPosition(msgList.getCount() - 1);
+        		}
+        		if(cardId != null) {
+        			card.setImageResource(Integer.parseInt(cardId));
+        		}
         	}
         };
+        
         
 		tcpClient = new TCPClient(new InputHandler()
 		{
@@ -79,28 +90,43 @@ public class InGameActivity extends Activity
 	        	@Override
 	        	public void handleMessage(Message message)
 	        	{
+	        		System.out.println(message);
 	        		Bundle b2;
 	        		b2 = message.getData();
 	        		msgData = (String)b2.get("android_data_msg");
 	        		if(msgData.contains("ONLINE_PLAYER")) {
 	        			int playerNumber = Integer.parseInt(msgData.split("=")[1]);
-	        			msgList.add("Waiting for other players : " + playerNumber + " / 5");
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_chat_msg", "Waiting for other players : " + playerNumber + " / 5");
+	    				handler.sendMessage(m);
+	        			/*msgList.add("Waiting for other players : " + playerNumber + " / 5");
 	        			msgList.notifyDataSetChanged();
-	    				msgView.smoothScrollToPosition(msgList.getCount() - 1);
+	    				msgView.smoothScrollToPosition(msgList.getCount() - 1);*/
 	    				if(playerNumber == 5) {
-	    					msgList.add("Game Starting!");
+	    					m = handler.obtainMessage();
+		    				b = m.getData();
+		    				b.putString("android_chat_msg", "Game Starting!");
+		    				
+	    					/*msgList.add("Game Starting!");
 		        			msgList.notifyDataSetChanged();
-		    				msgView.smoothScrollToPosition(msgList.getCount() - 1);
+		    				msgView.smoothScrollToPosition(msgList.getCount() - 1);*/
 	    				}
 	        		}
 	        		else if(msgData.equals("nosferatu_renfield")) {
-	        			showCard(R.drawable.nosferatu_renfield);
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_renfield);
+	    				handler.sendMessage(m);
 	        			player.renfield();
 	        		}
 	        		else if(msgData.equals("nosferatu_vampire")) {
-	        			showCard(R.drawable.nosferatu_vampire);
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_vampire);
+	    				handler.sendMessage(m);
 	        			player.initializeRole(true);
-	        			sendDataMsg("PA_DRAWCARDS");
+	        			//sendDataMsg("PA_DRAWCARDS");
 	        		}
 	        		else if(msgData.equals("nosferatu_hunter")) {
 	        			showCard(R.drawable.nosferatu_hunter);
@@ -150,6 +176,7 @@ public class InGameActivity extends Activity
 	public void showCard(int id) {
 		ImageView img = (ImageView) findViewById(R.id.card);
 		img.setImageResource(id);
+		setContentView(R.layout.activity_chat);
 	}
 	
     public void sendMessage()
@@ -177,6 +204,7 @@ public class InGameActivity extends Activity
     	}catch(java.lang.NullPointerException npe)
 		{
 			//Start ServerOffline activity if server is offline
+    		npe.printStackTrace();
 			Intent intent = new Intent(this, ServerOfflineActivity.class);
 			startActivity(intent);
 			finish();
