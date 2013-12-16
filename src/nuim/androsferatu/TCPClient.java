@@ -33,7 +33,7 @@ public class TCPClient implements Runnable
 			 * Eircom : 192.168.1.2 -
 			 * 
 			 */
-			this.serverAddr = InetAddress.getByName("192.168.1.3");
+			this.serverAddr = InetAddress.getByName("192.168.130.157");
 			
 		} catch (UnknownHostException e)
 		{

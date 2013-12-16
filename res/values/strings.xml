@@ -18,4 +18,7 @@
     <string name="submitBtnText">Let\'s Go !</string>
     <string name="send">Send</string>
     <string name="info">Kwoin</string>
+    <string name="title_activity_wait">WaitActivity</string>
+    <string name="waiting">waiting</string>
+
 </resources>

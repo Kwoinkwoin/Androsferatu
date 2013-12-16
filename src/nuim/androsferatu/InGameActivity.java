@@ -1,26 +1,21 @@
 package nuim.androsferatu;
 
-import nuim.androsferatu.R;
-import nuim.androsferatu.R.id;
-import nuim.androsferatu.R.layout;
-import nuim.androsferatu.R.menu;
-
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.app.Activity;
-import android.util.Log;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.support.v4.app.NavUtils;
-import android.annotation.TargetApi;
-import android.content.Intent;
-import android.os.Build;
 
 public class InGameActivity extends Activity
 {
@@ -33,6 +28,7 @@ public class InGameActivity extends Activity
 	private ListView msgView;
 	private String playerName;
 	private String msgData;
+	private Player player;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -45,7 +41,7 @@ public class InGameActivity extends Activity
 		//get Player name from previous activity
 		Intent parentIntent = getIntent();
 		this.playerName = parentIntent.getStringExtra("PLAYER_NAME");
-		
+		this.player = new Player(playerName, this);
 		msgView = (ListView)findViewById(R.id.listView1);
         msgList = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
         msgView.setAdapter(msgList);
@@ -86,6 +82,18 @@ public class InGameActivity extends Activity
 	        		Bundle b2;
 	        		b2 = message.getData();
 	        		msgData = (String)b2.get("android_data_msg");
+	        		if(msgData.contains("ONLINE_PLAYER")) {
+	        			int playerNumber = Integer.parseInt(msgData.split("=")[1]);
+	        			msgList.add("Waiting for other players : " + playerNumber + " / 5");
+	        			msgList.notifyDataSetChanged();
+	    				msgView.smoothScrollToPosition(msgList.getCount() - 1);
+	    				if(playerNumber == 5) {
+	    					msgList.add("Game Starting!");
+		        			msgList.notifyDataSetChanged();
+		    				msgView.smoothScrollToPosition(msgList.getCount() - 1);
+	    				}
+	        		}
+	        		if(msgData.equals("PA_DRAWCARDS"));
 	        	}
 	        };
 	        

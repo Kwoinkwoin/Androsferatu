@@ -45,7 +45,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int nosferatu_view1=0x7f02000a;
     }
     public static final class id {
-        public static final int action_settings=0x7f09000d;
+        public static final int action_settings=0x7f09000f;
         public static final int button1=0x7f090002;
         public static final int editText1=0x7f090000;
         public static final int exit_button=0x7f09000c;
@@ -55,9 +55,11 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int input=0x7f090008;
         public static final int listView1=0x7f090007;
         public static final int nameInput=0x7f090004;
+        public static final int progressBar1=0x7f09000d;
         public static final int sendButton=0x7f090009;
         public static final int submitBtn=0x7f090005;
         public static final int textView1=0x7f090001;
+        public static final int waiting_text_view=0x7f09000e;
         public static final int welcome_msg=0x7f090003;
     }
     public static final class layout {
@@ -67,6 +69,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int activity_game=0x7f030003;
         public static final int activity_main=0x7f030004;
         public static final int activity_server_offline=0x7f030005;
+        public static final int activity_wait=0x7f030006;
     }
     public static final class menu {
         public static final int activity_log_in=0x7f080000;
@@ -74,6 +77,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int chat=0x7f080002;
         public static final int game=0x7f080003;
         public static final int main=0x7f080004;
+        public static final int wait=0x7f080005;
     }
     public static final class string {
         public static final int action_settings=0x7f060001;
@@ -91,7 +95,9 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int title_activity_chat=0x7f06000c;
         public static final int title_activity_game=0x7f060003;
         public static final int title_activity_server_offline=0x7f060009;
+        public static final int title_activity_wait=0x7f060011;
         public static final int username=0x7f060004;
+        public static final int waiting=0x7f060012;
         public static final int welcome=0x7f06000d;
     }
     public static final class style {

@@ -7,17 +7,16 @@ public class Player {
 	private boolean first;
 	private boolean renfield;
 	private boolean nosferatu;
-	private GameActivity gameActivity;
+	private InGameActivity inGameActivity;
 	private int bites;
 	
-	public Player(boolean renfield, GameActivity gameActivity) {
-		this.gameActivity = gameActivity;
-		this.renfield = renfield;
-		if(renfield) {
-			nosferatu = false;
-			first = false;
-			gameActivity.showRenfield();
-		}
+	public Player(String name, InGameActivity inGameActivity) {
+		this.name = name;
+		this.cards = null;
+		this.first = false;
+		this.renfield = false;
+		this.nosferatu = false;
+		this.inGameActivity = inGameActivity;
 		this.bites = 0;
 	}
 	
@@ -28,10 +27,10 @@ public class Player {
 	public void initializeCards(String[] cards) {
 		this.cards = cards;
 	}
-	
+	/*
 	public String[] actionPhase(String[] drawCards) {
 		String[] resultCards = new String[2];
-		resultCards = gameActivity.chooseCards(cards, drawCards);
+		resultCards = inGameActivity.chooseCards(cards, drawCards);
 		for(int i=0; i<2-bites; i++) {
 			if(cards[i] == null) { // !! drawcards really has been changed?
 				if(drawCards[0] != null) {
@@ -43,7 +42,7 @@ public class Player {
 			}
 		}
 		return resultCards;
-	}
+	}*/
 	
 	public boolean kill() {
 		return nosferatu;

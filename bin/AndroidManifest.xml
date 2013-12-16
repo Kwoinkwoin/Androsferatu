@@ -19,7 +19,6 @@
         <activity
             android:name="nuim.androsferatu.CCMainActivity"
             android:label="@string/app_name" >
-
         </activity>
         <activity
             android:name="nuim.androsferatu.ServerOfflineActivity"
@@ -39,7 +38,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="nuim.androsferatu.CCMainActivity" />
         </activity>
-                <activity
+        <activity
             android:name="nuim.androsferatu.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
@@ -55,6 +54,10 @@
         <activity
             android:name="nuim.androsferatu.ActivityLogIn"
             android:label="@string/title_activity_activity_log_in" >
+        </activity>
+        <activity
+            android:name="nuim.androsferatu.WaitActivity"
+            android:label="@string/title_activity_wait" >
         </activity>
     </application>
 
