@@ -97,9 +97,16 @@ public class InGameActivity extends Activity
 	        			player.renfield();
 	        		}
 	        		else if(msgData.equals("nosferatu_vampire")) {
-	        			player.initializeRole(false);
+	        			player.initializeRole(true);
+	        			sendDataMsg("PA_DRAWCARDS");
 	        		}
-	        		if(msgData.equals("PA_DRAWCARDS"));
+	        		else if(msgData.equals("nosferatu_hunter")) {
+	        			player.initializeRole(false);
+	        			sendDataMsg("PA_DRAWCARDS");
+	        		}
+	        		else if(msgData.equals("nosferatu_bite")) {
+	        			
+	        		}
 	        	}
 	        };
 	        
@@ -156,6 +163,18 @@ public class InGameActivity extends Activity
 		input.setText("");
     }
     
+    public void sendDataMsg(String msg) {
+    	try {
+    		gameClient.sendMessage(msg);
+    	}catch(java.lang.NullPointerException npe)
+		{
+			//Start ServerOffline activity if server is offline
+			Intent intent = new Intent(this, ServerOfflineActivity.class);
+			startActivity(intent);
+			finish();
+		}
+    }
+    
     public void sendHelloMessage()
     {
     	try
@@ -177,7 +196,8 @@ public class InGameActivity extends Activity
          */
         try
 		{
-        	tcpClient.sendMessage(TCPClient.HELLO_MSG);
+        	tcpClient.sendMessage("nuim.androsferatu.PLAYER_NAME=" + playerName);
+        	gameClient.sendMessage("nuim.androsferatu.PLAYER_NAME=" + playerName);
 		}catch(java.lang.NullPointerException npe)
 		{
 			//Start ServerOffline activity if server is offline

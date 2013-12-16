@@ -17,8 +17,6 @@ public class TCPClient implements Runnable
 	private InputHandler inputHdlr;
 	private boolean isGoingtoCrash;
 	
-	public static final String HELLO_MSG = "nuim.androsferatu.HELLO_MSG";
-	
 	public TCPClient(InputHandler inputHdlr)
 	{
 		this.run = true;
