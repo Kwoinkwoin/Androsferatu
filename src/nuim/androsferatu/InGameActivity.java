@@ -196,8 +196,8 @@ public class InGameActivity extends Activity
          */
         try
 		{
-        	tcpClient.sendMessage("nuim.androsferatu.PLAYER_NAME=" + playerName);
-        	gameClient.sendMessage("nuim.androsferatu.PLAYER_NAME=" + playerName);
+        	tcpClient.sendMessage("PLAYER_NAME=" + playerName);
+        	gameClient.sendMessage("PLAYER_NAME=" + playerName);
 		}catch(java.lang.NullPointerException npe)
 		{
 			//Start ServerOffline activity if server is offline
