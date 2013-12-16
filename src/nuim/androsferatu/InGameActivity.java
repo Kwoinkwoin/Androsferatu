@@ -94,13 +94,16 @@ public class InGameActivity extends Activity
 	    				}
 	        		}
 	        		else if(msgData.equals("nosferatu_renfield")) {
+	        			showCard(R.drawable.nosferatu_renfield);
 	        			player.renfield();
 	        		}
 	        		else if(msgData.equals("nosferatu_vampire")) {
+	        			showCard(R.drawable.nosferatu_vampire);
 	        			player.initializeRole(true);
 	        			sendDataMsg("PA_DRAWCARDS");
 	        		}
 	        		else if(msgData.equals("nosferatu_hunter")) {
+	        			showCard(R.drawable.nosferatu_hunter);
 	        			player.initializeRole(false);
 	        			sendDataMsg("PA_DRAWCARDS");
 	        		}
@@ -142,6 +145,11 @@ public class InGameActivity extends Activity
 		});
         
         this.sendHelloMessage();
+	}
+	
+	public void showCard(int id) {
+		ImageView img = (ImageView) findViewById(R.id.card);
+		img.setImageResource(id);
 	}
 	
     public void sendMessage()
