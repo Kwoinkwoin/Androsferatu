@@ -93,6 +93,12 @@ public class InGameActivity extends Activity
 		    				msgView.smoothScrollToPosition(msgList.getCount() - 1);
 	    				}
 	        		}
+	        		else if(msgData.equals("nosferatu_renfield")) {
+	        			player.renfield();
+	        		}
+	        		else if(msgData.equals("nosferatu_vampire")) {
+	        			player.initializeRole(false);
+	        		}
 	        		if(msgData.equals("PA_DRAWCARDS"));
 	        	}
 	        };

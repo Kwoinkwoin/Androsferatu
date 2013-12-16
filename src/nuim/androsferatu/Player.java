@@ -12,12 +12,16 @@ public class Player {
 	
 	public Player(String name, InGameActivity inGameActivity) {
 		this.name = name;
-		this.cards = null;
+		this.cards = new String[4];
 		this.first = false;
 		this.renfield = false;
 		this.nosferatu = false;
 		this.inGameActivity = inGameActivity;
 		this.bites = 0;
+	}
+	
+	public void renfield() {
+		this.renfield = true;
 	}
 	
 	public void initializeRole(boolean nosferatu) {

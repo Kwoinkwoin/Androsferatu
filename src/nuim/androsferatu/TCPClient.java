@@ -17,7 +17,7 @@ public class TCPClient implements Runnable
 	private InputHandler inputHdlr;
 	private boolean isGoingtoCrash;
 	
-	public static final String HELLO_MSG = "Welcome."; //"com.cs385.chatclient.HELLO_MSG";
+	public static final String HELLO_MSG = "nuim.androsferatu.HELLO_MSG";
 	
 	public TCPClient(InputHandler inputHdlr)
 	{
