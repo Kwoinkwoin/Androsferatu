@@ -2,6 +2,10 @@ package nuim.androsferatu;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,12 +21,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class InGameActivity extends Activity
 {
 
 	public static final String PLAYER_NAME = "com.cs385.chatclient.PLAYER_NAME";
 	public static final String TCP_CLIENT = "com.cs385.chatclient.TCP_CLIENT";
+	public static final int DIALOG_PLAYER = 10;
+	public static final int DIALOG_MAGIC = 20;
+	public static final int DIALOG_CARD = 30;
 	private TCPClient tcpClient;
 	private GameClient gameClient;
 	private ArrayAdapter<String> msgList;
@@ -32,6 +40,10 @@ public class InGameActivity extends Activity
 	private Player player;
 	private ImageView card;
 	private TextView info;
+	private Thread gameDataThread;
+	private CharSequence[] playersNames;
+	private String dialogInfo;
+	private DialogInterface.OnClickListener onClickListener;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -44,6 +56,7 @@ public class InGameActivity extends Activity
 		//get Player name from previous activity
 		Intent parentIntent = getIntent();
 		this.card = (ImageView) findViewById(R.id.card);
+		this.info = (TextView) findViewById(R.id.text_info);
 		this.playerName = parentIntent.getStringExtra("PLAYER_NAME");
 		this.player = new Player(playerName, this);
 		msgView = (ListView)findViewById(R.id.listView1);
@@ -59,6 +72,7 @@ public class InGameActivity extends Activity
         		b = message.getData();
         		String s = (String)b.get("android_chat_msg");
         		String cardId = (String)b.get("android_image_id");
+        		String text = (String)b.get("android_text_info");
         		if(s != null) {
 					msgList.add(s);
 					msgList.notifyDataSetChanged();
@@ -66,6 +80,9 @@ public class InGameActivity extends Activity
         		}
         		if(cardId != null) {
         			card.setImageResource(Integer.parseInt(cardId));
+        		}
+        		if(text != null) {
+        			info.setText("" + text);
         		}
         	}
         };
@@ -98,7 +115,7 @@ public class InGameActivity extends Activity
 	        			int playerNumber = Integer.parseInt(msgData.split("=")[1]);
 	        			Message m = handler.obtainMessage();
 	    				Bundle b = m.getData();
-	    				b.putString("android_chat_msg", "Waiting for other players : " + playerNumber + " / 5");
+	    				b.putString("android_text_info", "Waiting for other players : " + playerNumber + " / 5");
 	    				handler.sendMessage(m);
 	        			/*msgList.add("Waiting for other players : " + playerNumber + " / 5");
 	        			msgList.notifyDataSetChanged();
@@ -107,16 +124,34 @@ public class InGameActivity extends Activity
 	    					m = handler.obtainMessage();
 		    				b = m.getData();
 		    				b.putString("android_chat_msg", "Game Starting!");
-		    				
+		    				handler.sendMessage(m);
 	    					/*msgList.add("Game Starting!");
 		        			msgList.notifyDataSetChanged();
 		    				msgView.smoothScrollToPosition(msgList.getCount() - 1);*/
 	    				}
 	        		}
+	        		else if(msgData.equals("START_GAME")) {
+	        			sendDataMsg("PA_ASKROLE");
+	        		}
+	        		else if(msgData.contains("WHO_FIRST_PLAYER")) {
+	        			String[] temp = msgData.split(";");
+	        			playersNames = new CharSequence[temp.length-1];
+	        			for(int i=0; i<playersNames.length; i++) {
+	        				playersNames[i] = temp[i+1];
+	        				Message m = handler.obtainMessage();
+		    				Bundle b = m.getData();
+		    				b.putString("android_chat_msg", "" + playersNames[i]);
+		    				handler.sendMessage(m);
+	        			}
+	        			dialogInfo = "Who will be the first player?";
+	        			onClickListener = new FirstPlayerListener();
+	        			showDialog(DIALOG_PLAYER);
+	        		}
 	        		else if(msgData.equals("nosferatu_renfield")) {
 	        			Message m = handler.obtainMessage();
 	    				Bundle b = m.getData();
 	    				b.putString("android_image_id", "" + R.drawable.nosferatu_renfield);
+	    				b.putString("android_text_info", "You are Renfield.");
 	    				handler.sendMessage(m);
 	        			player.renfield();
 	        		}
@@ -124,16 +159,64 @@ public class InGameActivity extends Activity
 	        			Message m = handler.obtainMessage();
 	    				Bundle b = m.getData();
 	    				b.putString("android_image_id", "" + R.drawable.nosferatu_vampire);
+	    				b.putString("android_text_info", "You are the vampire.");
 	    				handler.sendMessage(m);
 	        			player.initializeRole(true);
+	        			
 	        			//sendDataMsg("PA_DRAWCARDS");
 	        		}
 	        		else if(msgData.equals("nosferatu_hunter")) {
-	        			showCard(R.drawable.nosferatu_hunter);
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_hunter);
+	    				b.putString("android_text_info", "You are a hunter.");
+	    				handler.sendMessage(m);
 	        			player.initializeRole(false);
-	        			sendDataMsg("PA_DRAWCARDS");
+	        			
+	        			//sendDataMsg("PA_DRAWCARDS");
+	        		}
+	        		else if(msgData.contains("VAMPIRE_IS")) {
+	        			String vampireName = msgData.split(":")[1];
+	        			Message m = handler.obtainMessage();
+	        			Bundle b = m.getData();
+	        			b.putString("android_text_info", "The Vampire is " + vampireName + ".");
+	        			handler.sendMessage(m);
 	        		}
 	        		else if(msgData.equals("nosferatu_bite")) {
+        				Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_bite);
+	    				b.putString("android_text_info", "You draw a bite.");
+	    				handler.sendMessage(m);
+	        			player.addCard("BITE");
+	        			
+        			
+	        		}
+	        		else if(msgData.equals("nosferatu_component")) {
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_component);
+	    				b.putString("android_text_info", "You draw a component.");
+	    				handler.sendMessage(m);
+	        			player.addCard("COMPONENT");
+	        			
+		        	}
+	        		else if(msgData.equals("nosferatu_rumor")) {
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_gossip);
+	    				b.putString("android_text_info", "You draw a gossip.");
+	    				handler.sendMessage(m);
+	        			player.addCard("GOSSIP");
+	        			
+		        	}
+	        		else if(msgData.equals("nosferatu_night")) {
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_night);
+	    				b.putString("android_text_info", "You draw a night.");
+	    				handler.sendMessage(m);
+	        			player.addCard("NIGHT");
 	        			
 	        		}
 	        	}
@@ -156,7 +239,7 @@ public class InGameActivity extends Activity
 		Thread t = new Thread(tcpClient);
 		t.start();
 	
-		Thread gameDataThread = new Thread(gameClient);
+		gameDataThread = new Thread(gameClient);
 		gameDataThread.start();
 		
         Button sndButton = (Button)findViewById(R.id.sendButton);
@@ -171,12 +254,6 @@ public class InGameActivity extends Activity
 		});
         
         this.sendHelloMessage();
-	}
-	
-	public void showCard(int id) {
-		ImageView img = (ImageView) findViewById(R.id.card);
-		img.setImageResource(id);
-		setContentView(R.layout.activity_chat);
 	}
 	
     public void sendMessage()
@@ -197,6 +274,9 @@ public class InGameActivity extends Activity
 		}
 		input.setText("");
     }
+    public void confirm(View view) {
+		sendDataMsg("PA_CONFIRM");
+	}
     
     public void sendDataMsg(String msg) {
     	try {
@@ -281,6 +361,39 @@ public class InGameActivity extends Activity
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DIALOG_PLAYER:
+			Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(dialogInfo);
+			builder.setCancelable(true);
+			builder.setItems(playersNames, onClickListener);
+			AlertDialog dialog = builder.create();
+			dialog.show();
+		}
+	return super.onCreateDialog(id);
+	}
+	 
+	private final class CancelOnClickListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			Toast.makeText(getApplicationContext(), "Activity will continue", Toast.LENGTH_LONG).show();
+		}
+	}
+	 
+	private final class OkOnClickListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			Toast.makeText(getApplicationContext(), "I was just kidding", Toast.LENGTH_LONG).show();
+		}
+	}
+	
+	private final class FirstPlayerListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			sendDataMsg(playersNames[which].toString());
+		}
+		
 	}
 
 }

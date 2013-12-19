@@ -28,8 +28,23 @@ public class Player {
 		this.nosferatu = nosferatu;
 	}
 	
-	public void initializeCards(String[] cards) {
-		this.cards = cards;
+	public void addCard(String card) {
+		if(bites == 0) {
+			if(cards[0] == null) {
+				cards[0] = card;
+				return;
+			}
+			else if(cards[1] == null) {
+				cards[1] = card;
+				return;
+			}
+		}
+		if(cards[2] == null) {
+			cards[2] = card;
+		}
+		else if(cards[3] == null) {
+			cards[3] = card;
+		}
 	}
 	/*
 	public String[] actionPhase(String[] drawCards) {

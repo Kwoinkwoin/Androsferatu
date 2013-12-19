@@ -15,7 +15,7 @@
 		android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center_vertical"
-        android:id="@+id/textView1"
+        android:id="@+id/text_info"
         android:text="@string/info" />
 
     	<ImageView
@@ -24,7 +24,8 @@
         android:layout_height="150dp"
         android:layout_gravity="center_horizontal"
         android:id="@+id/card"
-        android:src="@drawable/nosferatu_boite" />
+        android:src="@drawable/nosferatu_boite" 
+        android:onClick="confirm"/>
     	
         <ListView
             
