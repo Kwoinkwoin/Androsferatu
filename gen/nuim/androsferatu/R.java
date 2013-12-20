@@ -37,11 +37,11 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int nosferatu_bite=0x7f020002;
         public static final int nosferatu_boite=0x7f020003;
         public static final int nosferatu_component=0x7f020004;
-        public static final int nosferatu_gossip=0x7f020005;
-        public static final int nosferatu_hunter=0x7f020006;
-        public static final int nosferatu_illo1=0x7f020007;
-        public static final int nosferatu_illo2=0x7f020008;
-        public static final int nosferatu_illo3=0x7f020009;
+        public static final int nosferatu_dawn=0x7f020005;
+        public static final int nosferatu_gossip=0x7f020006;
+        public static final int nosferatu_hunter=0x7f020007;
+        public static final int nosferatu_illo1=0x7f020008;
+        public static final int nosferatu_illo2=0x7f020009;
         public static final int nosferatu_illo4=0x7f02000a;
         public static final int nosferatu_night=0x7f02000b;
         public static final int nosferatu_renfield=0x7f02000c;

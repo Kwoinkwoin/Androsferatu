@@ -42,8 +42,13 @@ public class InGameActivity extends Activity
 	private TextView info;
 	private Thread gameDataThread;
 	private CharSequence[] playersNames;
+	private CharSequence[] playerCards;
+	private CharSequence[] magics;
 	private String dialogInfo;
 	private DialogInterface.OnClickListener onClickListener;
+	private String confirmMessage;
+	private int draws;
+	private boolean kill;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -59,6 +64,9 @@ public class InGameActivity extends Activity
 		this.info = (TextView) findViewById(R.id.text_info);
 		this.playerName = parentIntent.getStringExtra("PLAYER_NAME");
 		this.player = new Player(playerName, this);
+		this.confirmMessage = "PA_CONFIRM";
+		this.draws = 0;
+		this.kill = false;
 		msgView = (ListView)findViewById(R.id.listView1);
         msgList = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
         msgView.setAdapter(msgList);
@@ -138,10 +146,6 @@ public class InGameActivity extends Activity
 	        			playersNames = new CharSequence[temp.length-1];
 	        			for(int i=0; i<playersNames.length; i++) {
 	        				playersNames[i] = temp[i+1];
-	        				Message m = handler.obtainMessage();
-		    				Bundle b = m.getData();
-		    				b.putString("android_chat_msg", "" + playersNames[i]);
-		    				handler.sendMessage(m);
 	        			}
 	        			dialogInfo = "Who will be the first player?";
 	        			onClickListener = new FirstPlayerListener();
@@ -163,7 +167,6 @@ public class InGameActivity extends Activity
 	    				handler.sendMessage(m);
 	        			player.initializeRole(true);
 	        			
-	        			//sendDataMsg("PA_DRAWCARDS");
 	        		}
 	        		else if(msgData.equals("nosferatu_hunter")) {
 	        			Message m = handler.obtainMessage();
@@ -183,41 +186,328 @@ public class InGameActivity extends Activity
 	        			handler.sendMessage(m);
 	        		}
 	        		else if(msgData.equals("nosferatu_bite")) {
-        				Message m = handler.obtainMessage();
+	        			player.addCard("BITE");
+	        			draws++;
+	        			if(draws == 2) {
+	        				confirmMessage = "END_DRAW";
+	        				draws = 0;
+	        			}
+	        			Message m = handler.obtainMessage();
 	    				Bundle b = m.getData();
 	    				b.putString("android_image_id", "" + R.drawable.nosferatu_bite);
 	    				b.putString("android_text_info", "You draw a bite.");
 	    				handler.sendMessage(m);
-	        			player.addCard("BITE");
 	        			
         			
 	        		}
 	        		else if(msgData.equals("nosferatu_component")) {
+	        			player.addCard("COMPONENT");
+	        			draws++;
+	        			if(draws == 2) {
+	        				confirmMessage = "END_DRAW";
+	        				draws = 0;
+	        			}
 	        			Message m = handler.obtainMessage();
 	    				Bundle b = m.getData();
 	    				b.putString("android_image_id", "" + R.drawable.nosferatu_component);
 	    				b.putString("android_text_info", "You draw a component.");
 	    				handler.sendMessage(m);
-	        			player.addCard("COMPONENT");
 	        			
 		        	}
 	        		else if(msgData.equals("nosferatu_rumor")) {
+	        			draws++;
+	        			if(draws == 2) {
+	        				confirmMessage = "END_DRAW";
+	        				draws = 0;
+	        			}
 	        			Message m = handler.obtainMessage();
 	    				Bundle b = m.getData();
 	    				b.putString("android_image_id", "" + R.drawable.nosferatu_gossip);
 	    				b.putString("android_text_info", "You draw a gossip.");
 	    				handler.sendMessage(m);
 	        			player.addCard("GOSSIP");
-	        			
 		        	}
 	        		else if(msgData.equals("nosferatu_night")) {
+	        			player.addCard("NIGHT");
+	        			draws++;
+	        			if(draws == 2) {
+	        				confirmMessage = "END_DRAW";
+	        				draws = 0;
+	        			}
 	        			Message m = handler.obtainMessage();
 	    				Bundle b = m.getData();
 	    				b.putString("android_image_id", "" + R.drawable.nosferatu_night);
 	    				b.putString("android_text_info", "You draw a night.");
 	    				handler.sendMessage(m);
-	        			player.addCard("NIGHT");
-	        			
+	        		}
+	        		else if(msgData.equals("CURRENT_PLAYER")) {
+	        			confirmMessage = "PA_DRAWCARDS";
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_night);
+	    				b.putString("android_text_info", "It's your turn.");
+	    				handler.sendMessage(m);
+	        		}
+	        		else if(msgData.equals("ASK_CARD_RENFIELD")) {
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_renfield);
+	    				b.putString("android_text_info", "Chose a card for Renfield.");
+	    				handler.sendMessage(m);
+	        			playerCards = player.getRenfieldCards();
+	        			dialogInfo = "Chose a card for Renfield";
+	        			onClickListener = new CardRenfieldListener();
+	        			showDialog(DIALOG_CARD);
+	        		}
+	        		else if(msgData.contains("RENFIELD_SHOW_CARD")) {
+	        			if(player.isRenfield()) {
+		        			String[] temp = msgData.split(":");
+		        			String renfieldShowCard = temp[1];
+		        			String from = temp[2];
+		        			Message m = handler.obtainMessage();
+		    				Bundle b = m.getData();
+		    				if(renfieldShowCard.equals("nosferatu_bite")) {
+		    					b.putString("android_image_id", "" + R.drawable.nosferatu_bite);
+		    					b.putString("android_text_info", from + " has played a bite");
+		    				}
+		    				else if(renfieldShowCard.equals("nosferatu_rumor")) {
+		    					b.putString("android_image_id", "" + R.drawable.nosferatu_gossip);
+		    					b.putString("android_text_info", from + " has played a gossip");
+		    				}
+		    				else if(renfieldShowCard.equals("nosferatu_component")) {
+		    					b.putString("android_image_id", "" + R.drawable.nosferatu_component);
+		    					b.putString("android_text_info", from + " has played a component");
+		    				}
+		    				else if(renfieldShowCard.equals("nosferatu_night")) {
+		    					b.putString("android_image_id", "" + R.drawable.nosferatu_night);
+		    					b.putString("android_text_info", from + " has played a night");
+		    				}
+		    				handler.sendMessage(m);
+	        			}
+	        		}
+	        		else if(msgData.contains("ASK_CARD_DISCARD")) {
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_night);
+	    				b.putString("android_text_info", "Chose a card to discard.");
+	    				handler.sendMessage(m);
+	        			playerCards = player.getDiscardCards();
+	        			dialogInfo = "Chose a card to discard";
+	        			onClickListener = new CardDiscardListener();
+	        			showDialog(DIALOG_CARD);
+	        		}
+	        		else if(msgData.contains("ALL_SHOW_CARD")) {
+	        			confirmMessage = "PA_CONFIRM_NEXT_TURN";
+	        			String[] temp = msgData.split(":");
+	        			String allShowCard = temp[1];
+	        			String from = temp[2];
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				if(allShowCard.equals("nosferatu_bite")) {
+	    					b.putString("android_image_id", "" + R.drawable.nosferatu_bite);
+	    					b.putString("android_text_info", from + " has discarded a bite");
+	    				}
+	    				else if(allShowCard.equals("nosferatu_rumor")) {
+	    					b.putString("android_image_id", "" + R.drawable.nosferatu_gossip);
+	    					b.putString("android_text_info", from + " has discarded a gossip");
+	    				}
+	    				else if(allShowCard.equals("nosferatu_component")) {
+	    					b.putString("android_image_id", "" + R.drawable.nosferatu_component);
+	    					b.putString("android_text_info", from + " has discarded a component");
+	    				}
+	    				else if(allShowCard.equals("nosferatu_night")) {
+	    					b.putString("android_image_id", "" + R.drawable.nosferatu_night);
+	    					b.putString("android_text_info", from + " has discarded a night");
+	    				}
+	    				handler.sendMessage(m);
+	        		}
+	        		else if(msgData.contains("END_TURN")) {
+	        			confirmMessage="PA_CONFIRM_CLOCK";
+	        			String clock = msgData.split(":")[1];
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	        			if(clock.equals("nosferatu_night")) {
+	        				b.putString("android_image_id", "" + R.drawable.nosferatu_night);
+	        				b.putString("android_text_info", "It's still night.");
+	        			}
+	        			else if(clock.equals("nosferatu_dawn")) {
+	        				b.putString("android_image_id", "" + R.drawable.nosferatu_dawn);
+	        				b.putString("android_text_info", "The sun is rising.");
+	        			}
+	        			handler.sendMessage(m);
+	        		}
+	        		else if(msgData.equals("MAGIC_OCCURS")) {
+	        			confirmMessage = "kwoin";
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_component);
+        				b.putString("android_text_info", "Full Component : magic occurs!");
+        				handler.sendMessage(m);
+	        		}
+	        		else if(msgData.contains("WHICH_MAGIC")) {
+	        			String[] temp = msgData.split(";");
+	        			magics = new CharSequence[temp.length-1];
+	        			for(int i=1; i<temp.length; i++) {
+	        				magics[i-1] = temp[i];
+	        			}
+	        			dialogInfo = "Magic occurs!";
+	        			onClickListener = new MagicListener();
+	        			showDialog(DIALOG_MAGIC);
+	        		}
+	        		else if(msgData.contains("VAMPIRE_BITES")) {
+	        			int bites = Integer.parseInt(msgData.split(":")[1]);
+	        			confirmMessage = "kwoin";
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_bite);
+        				b.putString("android_text_info", "The vampire has bitten : " + bites + "x .");
+        				handler.sendMessage(m);
+	        		}
+	        		else if(msgData.contains("WHICH_TARGET_BITTEN")) {
+	        			String[] temp = msgData.split(";");
+	        			int nBites = Integer.parseInt(temp[1]);
+	        			playersNames = new CharSequence[temp.length-2];
+	        			for(int i=2; i<temp.length; i++) {
+	        				playersNames[i-2] = temp[i];
+	        			}
+	        			if(nBites < 2) {
+	        				dialogInfo = "Which target to bite?";
+	        				onClickListener = new BiteListener();
+	        				showDialog(DIALOG_PLAYER);
+	        			}
+	        			else {
+	        				for(int i=0; i<nBites; i++) {
+	        					dialogInfo = "Target " + (i+1) + " to bite?";
+		        				onClickListener = new BiteListener();
+		        				showDialog(DIALOG_PLAYER);
+	        				}
+	        			}
+	        		}
+	        		else if(msgData.contains("HAS_BEEN_BITTEN")) {
+	        			confirmMessage = "PA_CONFIRM_END_TURN";
+	        			String target = msgData.split(":")[1];
+	        			if(player.getName().equals(target)) {
+        					player.addBite();
+        				}
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_bite);
+        				b.putString("android_text_info", target + " has been bitten!");
+        				handler.sendMessage(m);
+	        		}
+	        		else if(msgData.equals("VAMPIRE_WIN")) {
+	        			confirmMessage = "kwoin";
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_vampire);
+        				b.putString("android_text_info", "The Vampire has bitten 5 times. VAMPIRE WINS!");
+        				handler.sendMessage(m);
+	        		}
+	        		else if(msgData.contains("VAMPIRE_SECOND_WIN")) {
+	        			confirmMessage = "kwoin";
+	        			String target = msgData.split(":")[1];
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_vampire);
+        				b.putString("android_text_info", target + " has been killed but he was a hunter!. VAMPIRE WINS!");
+        				handler.sendMessage(m);
+	        		}
+	        		else if(msgData.equals("NOTHING_HAPPENS")) {
+	        			confirmMessage = "PA_CONFIRM_END_TURN";
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				if(player.isRenfield()) {
+	    					b.putString("android_image_id", "" + R.drawable.nosferatu_renfield);
+	    				}
+	    				else if(player.isNosferatu()) {
+	    					b.putString("android_image_id", "" + R.drawable.nosferatu_vampire);
+	    				}
+	    				else if(!player.isNosferatu()) {
+	    					b.putString("android_image_id", "" + R.drawable.nosferatu_hunter);
+	    				}
+        				b.putString("android_text_info", "Nothing happens...");
+        				handler.sendMessage(m);
+	        		}
+	        		else if(msgData.contains("WHICH_IDENTITY")) {
+	        			String[] temp = msgData.split(";");
+	        			playersNames = new CharSequence[temp.length-1];
+	        			for(int i=1; i<temp.length; i++) {
+	        				playersNames[i-1] = temp[i];
+	        			}
+	        			dialogInfo = "Which identity to reveal?";
+	        			onClickListener = new IdentityListener();
+	        			showDialog(DIALOG_PLAYER);
+	        		}
+	        		else if(msgData.contains("TARGET_IDENTITY_IS")) {
+	        			confirmMessage = "PA_CONFIRM_END_TURN";
+	        			String target = msgData.split(":")[1];
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_hunter);
+	    				b.putString("android_text_info", target + " is a hunter!");
+        				handler.sendMessage(m);
+	        		}
+	        		else if(msgData.contains("WHICH_TRANSFUSION")) {
+	        			String[] temp = msgData.split(";");
+	        			playersNames = new CharSequence[temp.length-1];
+	        			for(int i=1; i<temp.length; i++) {
+	        				playersNames[i-1] = temp[i];
+	        			}
+	        			dialogInfo = "Who transfuse?";
+	        			onClickListener = new TransfusionListener();
+	        			showDialog(DIALOG_PLAYER);
+	        		}
+	        		else if(msgData.contains("TARGET_TRANSFUSION_IS")) {
+	        			confirmMessage = "PA_CONFIRM_END_TURN";
+	        			String target = msgData.split(":")[1];
+	        			if(player.getName().equals(target)) {
+        					player.removeBite(msgData.split(":")[2]);
+        				}
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_ambiance4);
+	    				b.putString("android_text_info", target + " has been transfused! He draws a card");
+        				handler.sendMessage(m);
+	        		}
+	        		else if(msgData.contains("END_ALL_TURN")) {
+	        			String[] temp = msgData.split(";");
+	        			if(!player.isNosferatu()) {
+		        			playersNames = new CharSequence[temp.length];
+		        			playersNames[0] = "No thx";
+		        			for(int i=1; i<temp.length; i++) {
+		        				playersNames[i] = temp[i];
+		        			}
+		        			dialogInfo = "Kill somebody?";
+		        			onClickListener = new KillListener();
+		        			showDialog(DIALOG_PLAYER);
+	        			}
+	        			else {
+	        				sendDataMsg("PA_TARGET_KILL:No thx");
+	        			}
+	        		}
+	        		else if(msgData.equals("HUNTERS_WIN")) {
+	        			confirmMessage = "kwoin";
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_hunter);
+        				b.putString("android_text_info", "The Vampire has been killed. HUNTERS WIN!");
+        				handler.sendMessage(m);
+	        		}
+	        		else if(msgData.equals("NIGHT_REMOVED")) {
+	        			confirmMessage = "PA_CONFIRM_END_TURN";
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_ambiance4);
+	    				b.putString("android_text_info", "A night has been removed from the clock.");
+        				handler.sendMessage(m);
+	        		}
+	        		else if(msgData.equals("CLOCK_NIGHT")) {
+	        			confirmMessage = "kwoin";
+	        			Message m = handler.obtainMessage();
+	    				Bundle b = m.getData();
+	    				b.putString("android_image_id", "" + R.drawable.nosferatu_night);
+	    				b.putString("android_text_info", "it's still night");
+        				handler.sendMessage(m);
 	        		}
 	        	}
 	        };
@@ -275,7 +565,7 @@ public class InGameActivity extends Activity
 		input.setText("");
     }
     public void confirm(View view) {
-		sendDataMsg("PA_CONFIRM");
+		sendDataMsg(confirmMessage);
 	}
     
     public void sendDataMsg(String msg) {
@@ -373,27 +663,79 @@ public class InGameActivity extends Activity
 			builder.setItems(playersNames, onClickListener);
 			AlertDialog dialog = builder.create();
 			dialog.show();
+			break;
+			
+		case DIALOG_CARD:
+			Builder builder2 = new AlertDialog.Builder(this);
+			builder2.setTitle(dialogInfo);
+			builder2.setCancelable(true);
+			builder2.setItems(playerCards, onClickListener);
+			AlertDialog dialog2 = builder2.create();
+			dialog2.show();
+			break;
+			
+		case DIALOG_MAGIC:
+			Builder builder3 = new AlertDialog.Builder(this);
+			builder3.setTitle(dialogInfo);
+			builder3.setCancelable(true);
+			builder3.setItems(magics, onClickListener);
+			AlertDialog dialog3 = builder3.create();
+			dialog3.show();
+			break;
+			
 		}
 	return super.onCreateDialog(id);
-	}
-	 
-	private final class CancelOnClickListener implements DialogInterface.OnClickListener {
-		public void onClick(DialogInterface dialog, int which) {
-			Toast.makeText(getApplicationContext(), "Activity will continue", Toast.LENGTH_LONG).show();
-		}
-	}
-	 
-	private final class OkOnClickListener implements DialogInterface.OnClickListener {
-		public void onClick(DialogInterface dialog, int which) {
-			Toast.makeText(getApplicationContext(), "I was just kidding", Toast.LENGTH_LONG).show();
-		}
 	}
 	
 	private final class FirstPlayerListener implements DialogInterface.OnClickListener {
 		public void onClick(DialogInterface dialog, int which) {
-			sendDataMsg(playersNames[which].toString());
+			sendDataMsg("PA_FIRSTPLAYER:" + playersNames[which].toString());
 		}
-		
+	}
+	
+	private final class CardRenfieldListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			player.removeCard(which);
+			player.compactCards();
+			sendDataMsg("PA_CARD_RENFIELD:" + playerCards[which].toString());
+		}
+	}
+	
+	private final class CardDiscardListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			player.removeCard(which);
+			player.compactCards();
+			sendDataMsg("PA_CARD_DISCARD:" + playerCards[which].toString());
+		}
+	}
+	
+	private final class MagicListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			sendDataMsg("PA_MAGIC:" + magics[which].toString());
+		}
+	}
+	
+	private final class BiteListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			sendDataMsg("PA_TARGET_BITTEN:" + playersNames[which].toString());
+		}
+	}
+	
+	private final class IdentityListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			sendDataMsg("PA_TARGET_IDENTITY:" + playersNames[which].toString());
+		}
+	}
+	
+	private final class TransfusionListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			sendDataMsg("PA_TARGET_TRANSFUSION:" + playersNames[which].toString());
+		}
 	}
 
+	private final class KillListener implements DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			sendDataMsg("PA_TARGET_KILL:" + playersNames[which].toString());
+		}
+	}
 }
