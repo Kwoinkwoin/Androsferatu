@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -508,6 +509,15 @@ public class InGameActivity extends Activity
 	    				b.putString("android_image_id", "" + R.drawable.nosferatu_night);
 	    				b.putString("android_text_info", "it's still night");
         				handler.sendMessage(m);
+	        		}
+	        		else if(msgData.contains("ERROR_SRV_IS_FULL"))
+	        		{
+	        			Context context = getApplicationContext();
+	        			CharSequence text = "Sorry, the server is full.\nYet, you can still chat.";
+	        			int duration = Toast.LENGTH_LONG;
+
+	        			Toast toast = Toast.makeText(context, text, duration);
+	        			toast.show();
 	        		}
 	        	}
 	        };
